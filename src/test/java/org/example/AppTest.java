@@ -63,4 +63,18 @@ public class AppTest {
         Assertions.assertTrue(wildcard.match("test/test/build/"));
         Assertions.assertTrue(wildcard.match("test/test/build"));
     }
+
+
+    @Test
+    public void test5() {
+        Wildcard wildcard = new Wildcard("test/**/build");
+
+        Assertions.assertTrue(wildcard.match("test/x/x/build"));
+        Assertions.assertTrue(wildcard.match("test/xx/build"));
+        Assertions.assertTrue(wildcard.match("test/build"));
+
+        Assertions.assertFalse(wildcard.match("build"));
+        Assertions.assertFalse(wildcard.match("ttt/build/"));
+        Assertions.assertFalse(wildcard.match("ttt/test/build/"));
+    }
 }
