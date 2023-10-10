@@ -1,4 +1,7 @@
-# Path Wildcards
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+
+# Path Wildcard
 
 This wildcard is implemented by **JAVA** and follows(not strictly sure) a **subset** rules of gitignore wildcard.
 
