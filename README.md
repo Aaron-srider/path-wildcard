@@ -1,6 +1,6 @@
 # Path Wildcards
 
-This wildcard is implemented by **JAVA** and follows(not strictly sure) a **subset** rules of gitignore wildcard. 
+This wildcard is implemented by **JAVA** and follows(not strictly sure) a **subset** rules of gitignore wildcard.
 
 ## Matching rules
 
@@ -38,3 +38,7 @@ Wildcard wildcard = new Wildcard("test/**/build");
 
 Assertions.assertTrue(wildcard.match("test/x/x/build"));
 ```
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0).
