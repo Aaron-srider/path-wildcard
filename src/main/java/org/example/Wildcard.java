@@ -3,58 +3,86 @@ package org.example;
 import lombok.var;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Wildcard {
+
     @NotNull
-    private String pattern;
+    private String reg = "";
 
-    private List<String > patterns = new ArrayList<>();
+    @NotNull
+    private final String pattern;
 
-    public Wildcard(@NotNull String pattern) {
+    public Wildcard(
+            @NotNull
+            String pattern
+    ) {
+
         this.pattern = pattern;
-        var l = new ArrayList<String>();
-        var s = pattern.split("/");
 
-        Arrays.stream(s).filter(item -> !item.isEmpty()).forEach(item -> {
-            if(item.equals("**")) {
-                l.add(".*");
-            } else if (item.equals("*")) {
-                l.add("[^/]+");
+        convertPatternToRegex();
+
+        processRegTailingSplash();
+
+    }
+
+    private void convertPatternToRegex() {
+        var patternParts = pattern.split("/");
+
+        Arrays.stream(patternParts).filter(item -> !item.isEmpty()).forEach(part -> {
+            if (part.equals("**")) {
+                addMatchAllReg();
+            } else if (part.equals("*")) {
+                addMatchAllButPathSeparatorReg();
             } else {
-                l.add(item);
+                addPartItself(part);
             }
         });
 
-        AtomicReference<String> reg = new AtomicReference<>("");
-        l.stream().forEach(
-                item -> {
-                    if(item.equals(".*")) {
-                        reg.set(reg.get() + item );
-                        return;
-                    }
-                    reg.set(reg.get() + item + "/" );
-                }
-        );
+        removeTailingSplash();
+    }
 
-        var re = reg.get();
-        re = re.substring(0, re.length() - 1);
+    private void addMatchAllReg() {
+        reg += ".*";
+    }
 
+    private void addMatchAllButPathSeparatorReg() {
+        reg += "[^/]+/";
+    }
 
-        if(pattern.endsWith("/")) {
-            patterns.add( re + "/.*");
+    private void addPartItself(
+            @NotNull
+            String part
+    ) {
+        reg += (part + "/");
+    }
+
+    private void removeTailingSplash() {
+        reg = reg.substring(0, reg.length() - 1);
+    }
+
+    private void processRegTailingSplash() {
+
+        boolean patternMustBeADir = pattern.endsWith("/");
+        if (patternMustBeADir) {
+            addMatchAllSubContentsButDirItselfReg();
         } else {
-            patterns.add( re + "(/.*)?");
+            addMatchAllSubContentsReg();
         }
     }
 
-    public boolean match(@NotNull String str) {
+    private void addMatchAllSubContentsButDirItselfReg() {
+        reg += "/.*";
+    }
 
-        return patterns.stream().anyMatch(item -> {
-            return str.matches(item);
-        });
+    private void addMatchAllSubContentsReg() {
+        reg += "(/.*)?";
+    }
+
+    public boolean match(
+            @NotNull
+            String str
+    ) {
+        return str.matches(reg);
     }
 }
