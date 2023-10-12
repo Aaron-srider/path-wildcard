@@ -1,4 +1,4 @@
-package org.example;
+package fit.wenchao;
 
 
 import org.junit.jupiter.api.Assertions;

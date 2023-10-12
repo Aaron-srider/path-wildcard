@@ -1,4 +1,4 @@
-package org.example;
+package fit.wenchao;
 
 import lombok.var;
 import org.jetbrains.annotations.NotNull;
