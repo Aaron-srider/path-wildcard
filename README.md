@@ -1,6 +1,5 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-
 # Path Wildcard
 
 This wildcard is implemented by **JAVA** and follows(not strictly sure) a **subset** rules of gitignore wildcard.
@@ -14,21 +13,27 @@ This wildcard is implemented by **JAVA** and follows(not strictly sure) a **subs
 
 ## Matching examples
 
-| pattern         | input           | output | explain                                                      |
-| --------------- | --------------- | ------ | ------------------------------------------------------------ |
-| build           | build/          | yes    | match a dir                                                  |
-|                 | build           | yes    | match a regular file                                         |
-|                 | build/xxx       | yes    | match sub contents of a dir                                  |
-|                 | xx/build        | no     | only match files in current dir                              |
-| build/          | build/xxx       | yes    | match sub contents of a dir                                  |
-|                 | build           | no     | only match dir files                                         |
-| \*/build/\*     | test/build/xx/x | yes    | leading \* matchs A dir, tailing \* matchs A reg-file or dir |
-|                 | build/          | no     | leading \* MUST match A dir                                  |
-|                 | test/build/     | no     | tailing \* MUST match A dir, "build" itself not included     |
-| test/\*\*/build | test/x/x/build  | yes    | \*\* matchs multiple dir                                     |
-|                 | test/build      | yes    | \*\* matchs 0 or multiple dir                                |
-|                 | build           | no     |                                                              |
-|                 | ttt/build/      | no     |                                                              |
+| pattern                 | input                    | output | explain                              |
+| ----------------------- | ------------------------ | ------ | ------------------------------------ |
+| build                   | build/                   | yes    |                                      |
+|                         | build                    | yes    |                                      |
+|                         | build/xxx                | yes    |                                      |
+|                         | xx/build                 | no     |                                      |
+| build/                  | build/xxx                | yes    |                                      |
+|                         | build                    | no     | only match dir files                 |
+| \*/build/\*             | test/build/xx/x          | yes    |                                      |
+|                         | build/                   | no     | leading \* MUST match **some** chars |
+|                         | test/build/              | no     | tailing \* MUST match **some** chars |
+| test/build/sample\*.txt | test/build/sample.txt    | yes    |                                      |
+|                         | test/build/sampleABC.txt | yes    |                                      |
+|                         | test/build/samABCple.txt | no     |                                      |
+| test/\*\*/build         | test/x/x/build           | yes    | \*\* matchs multiple dir             |
+|                         | test/build               | yes    | \*\* matchs 0 or multiple dir        |
+|                         | build                    | no     |                                      |
+|                         | ttt/build/               | no     |                                      |
+| test/bu?ild/sample      | test/buAild/sample       | yes    |                                      |
+|                         | test/buABild/sample      | no     | there are 2 chars between bu and ild |
+|                         | test/bu/ild/sample       | no     | ? can not match /                    |
 
 ## Env
 
