@@ -39,6 +39,7 @@ public class AppTest {
         Assertions.assertFalse(wildcard.match("test/test/build"));
     }
 
+
     @Test
     public void test3() {
         Wildcard wildcard = new Wildcard("*/build/*");
@@ -77,4 +78,15 @@ public class AppTest {
         Assertions.assertFalse(wildcard.match("ttt/build/"));
         Assertions.assertFalse(wildcard.match("ttt/test/build/"));
     }
+
+    @Test
+    public void test6() {
+        Wildcard wildcard = new Wildcard("../test/sample*.txt");
+
+        Assertions.assertTrue(wildcard.match("../test/sampleHAHAHA.txt"));
+
+        Assertions.assertFalse(wildcard.match("../test/sampabc.txt"));
+        Assertions.assertFalse(wildcard.match("../test/sample/abc.txt"));
+    }
+
 }

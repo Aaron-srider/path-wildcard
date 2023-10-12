@@ -22,7 +22,7 @@ public class Wildcard {
 
         convertPatternToRegex();
 
-        processRegTailingSplash();
+        processRegTailingSlash();
 
     }
 
@@ -32,8 +32,8 @@ public class Wildcard {
         Arrays.stream(patternParts).filter(item -> !item.isEmpty()).forEach(part -> {
             if (part.equals("**")) {
                 addMatchAllReg();
-            } else if (part.equals("*")) {
-                addMatchAllButPathSeparatorReg();
+            } else if (part.contains("*")) {
+                addMatchAllButPathSeparatorReg(part);
             } else {
                 addPartItself(part);
             }
@@ -46,10 +46,11 @@ public class Wildcard {
         reg += ".*";
     }
 
-    private void addMatchAllButPathSeparatorReg() {
-        reg += "[^/]+/";
+    private void addMatchAllButPathSeparatorReg(@NotNull String origin) {
+        String replace = origin.replace("*", "[^/]+");
+        reg += replace + "/";
     }
-
+    //  reg += "[^/]+/";
     private void addPartItself(
             @NotNull
             String part
@@ -61,7 +62,7 @@ public class Wildcard {
         reg = reg.substring(0, reg.length() - 1);
     }
 
-    private void processRegTailingSplash() {
+    private void processRegTailingSlash() {
 
         boolean patternMustBeADir = pattern.endsWith("/");
         if (patternMustBeADir) {
