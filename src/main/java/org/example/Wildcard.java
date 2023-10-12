@@ -34,6 +34,8 @@ public class Wildcard {
                 addMatchAllReg();
             } else if (part.contains("*")) {
                 addMatchAllButPathSeparatorReg(part);
+            }else if (part.contains("?")) {
+                addMatchSingleOccurrenceButPathSeparatorReg(part);
             } else {
                 addPartItself(part);
             }
@@ -50,7 +52,12 @@ public class Wildcard {
         String replace = origin.replace("*", "[^/]+");
         reg += replace + "/";
     }
-    //  reg += "[^/]+/";
+
+    private void addMatchSingleOccurrenceButPathSeparatorReg(@NotNull String origin) {
+        String replace = origin.replace("?", "[^/]{1,1}");
+        reg += replace + "/";
+    }
+
     private void addPartItself(
             @NotNull
             String part

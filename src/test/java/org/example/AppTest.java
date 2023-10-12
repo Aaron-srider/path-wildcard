@@ -89,4 +89,15 @@ public class AppTest {
         Assertions.assertFalse(wildcard.match("../test/sample/abc.txt"));
     }
 
+    @Test
+    public void test7() {
+        Wildcard wildcard = new Wildcard("test/plan?Used/text");
+
+        Assertions.assertTrue(wildcard.match("test/planAUsed/text"));
+
+        Assertions.assertFalse(wildcard.match("test/planUsed/text"));
+        Assertions.assertFalse(wildcard.match("test/planAbUsed/text"));
+    }
+
+
 }
