@@ -7,75 +7,56 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FileFinderTest {
-    @Test
-    void test() {
-        var fileFinder = new FileFinder();
-        var list = new ArrayList<String>();
-        list.add("file.data");
-        List<Path> result = fileFinder.findFilesWithWildcard("fordebug", "file.data");
-        Assertions.assertTrue(result.size() > 0);
-        result.forEach((file) -> {
-            Assertions.assertTrue(list.contains(file.toString()));
-        });
-    }
-
-    ArrayList<String> list = new ArrayList<String>();
-
     @BeforeEach
     void setup() {
-        list.add("fordebug/test/buiABCld/file.data");
-        list.add("fordebug/test/build/file.data");
-        list.add("fordebug/TestA/file.data");
-        list.add("fordebug/TestB/file.data");
-        list.add("fordebug/TestCDEF/file.data");
-        list.add("fordebug/file.data");
-        list.add("sample.data");
+        preparedFileList.add("fordebug/test/buiABCld/file.data");
+        preparedFileList.add("fordebug/test/build/file.data");
+        preparedFileList.add("fordebug/TestA/file.data");
+        preparedFileList.add("fordebug/TestB/file.data");
+        preparedFileList.add("fordebug/TestCDEF/file.data");
+        preparedFileList.add("fordebug/file.data");
+        preparedFileList.add("TestA/sample.data");
+        preparedFileList.add("TestB/file.data");
     }
 
+    List<String> preparedFileList = new ArrayList<String>();
+
     @Test
-    void test1() {
+    void testFileFinder() {
         var fileFinder = new FileFinder();
         var fileSandBox = new FileSandBox();
 
         fileSandBox.doThings((sandBox) -> {
-            sandBox.prepareFiles(list);
+            sandBox.prepareFiles(preparedFileList);
 
+            var targetSearchPath = sandBox.getNormalizedPath("/ddd/ddd");
 
-            var targetPath = sandBox.getNormalizedPath("fordebug/jflas/hgkja.hfak");
-            var np = Paths.get("../../*.data/../").normalize();
-            String string = np.toString();
-            String[] split = string.split("/");
-            long count = Arrays.stream(split).filter(s -> s.equals("..")).count();
-            var withoutdoubledots = Arrays.stream(split).filter(s -> !s.equals("..")).collect(Collectors.joining("/"));
+            List<Path> matchResults = fileFinder.findFilesWithWildcard(
+                    sandBox.getAbsoluteRootDir(),
+                    targetSearchPath.toString(),
+                    "../Test?/*.data"
+            );
 
-            targetPath =   sandBox.goBackTillRoot(count, targetPath);
-            System.out.println(withoutdoubledots);
-            System.out.println(targetPath);
-            System.out.println("jaklsdf");
-            //var pattern = sandBox.getNormalizedPath();
-            //
-            //List<Path> matchResults = fileFinder.findFilesWithWildcard(targetPath.toString(), "../*.data");
-            //
-            //assertAllMatches(sandBox, matchResults, list);
+            var expectedResults = new ArrayList<String>();
+            expectedResults.add("TestA/sample.data");
+            expectedResults.add("TestB/file.data");
+            assertMatches(sandBox, matchResults, expectedResults);
         });
     }
 
-    private void assertAllMatches(
+    private void assertMatches(
             FileSandBox sandBox,
             List<Path> matchResults,
-            ArrayList<String> list
+            List<String> expectedList
     ) {
         Assertions.assertTrue(matchResults.size() > 0);
-        list.forEach(file -> {
-            var a = sandBox.getNormalizedPath(file);
-            Assertions.assertTrue(matchResults.contains(a));
+        expectedList.forEach(relativeFilePath -> {
+            var normalizedPath = sandBox.getNormalizedPath(relativeFilePath);
+            Assertions.assertTrue(matchResults.contains(normalizedPath));
         });
     }
 }

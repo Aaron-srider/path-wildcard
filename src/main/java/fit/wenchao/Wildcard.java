@@ -66,6 +66,9 @@ public class Wildcard {
     }
 
     private void removeTailingSplash() {
+        if (reg.length() <= 0) {
+            return;
+        }
         reg = reg.substring(0, reg.length() - 1);
     }
 

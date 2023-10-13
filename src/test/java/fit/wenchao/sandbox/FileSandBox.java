@@ -111,14 +111,6 @@ public class FileSandBox {
     }
 
     @NotNull
-    public String get(
-            @NotNull
-            String s
-    ) {
-        return Paths.get(absoluteRootDir.toString() + "/" + s).normalize().toString();
-    }
-
-    @NotNull
     public Path getNormalizedPath(
             @NotNull
             String s
